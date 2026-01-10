@@ -2,8 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Palette, Music, Globe } from "lucide-react";
-import kindergartenImage from "@/assets/kindergarten.jpg";
-import primaryImage from "@/assets/primary.jpg";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Link } from "react-router-dom";
 const Programs = () => {
@@ -72,9 +70,11 @@ const Programs = () => {
               </Link>
             </div>
 
-            <div className="order-1 lg:order-2">
-              <img src={getContent("kindergarten", "image", "") || kindergartenImage} alt="Kindergarten students learning" className="rounded-lg shadow-lg w-full h-[400px] object-cover" />
-            </div>
+            {getContent("kindergarten", "image", "") && (
+              <div className="order-1 lg:order-2">
+                <img src={getContent("kindergarten", "image", "")} alt="Kindergarten students learning" className="rounded-lg shadow-lg w-full h-[400px] object-cover" />
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -83,9 +83,11 @@ const Programs = () => {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <img src={getContent("primary", "image", "") || primaryImage} alt="Primary school students" className="rounded-lg shadow-lg w-full h-[400px] object-cover" />
-            </div>
+            {getContent("primary", "image", "") && (
+              <div>
+                <img src={getContent("primary", "image", "")} alt="Primary school students" className="rounded-lg shadow-lg w-full h-[400px] object-cover" />
+              </div>
+            )}
 
             <div>
               <Badge className="mb-4 bg-primary">Ages 6-13</Badge>

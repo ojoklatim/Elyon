@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHeroSlides } from "@/hooks/useHeroSlides";
-import heroImage from "@/assets/hero-school.jpg";
 
 interface HeroSlideshowProps {
   fallbackImage?: string;
@@ -24,13 +23,16 @@ const HeroSlideshow = ({ fallbackImage }: HeroSlideshowProps) => {
     return () => clearInterval(interval);
   }, [slides.length, nextSlide]);
 
-  // If no slides, show fallback
+  // If no slides, show fallback or transparent background
   if (loading || slides.length === 0) {
+    if (!fallbackImage) {
+      return <div className="absolute inset-0 bg-transparent" />;
+    }
     return (
       <div className="absolute inset-0">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${fallbackImage || heroImage})` }}
+          style={{ backgroundImage: `url(${fallbackImage})` }}
         />
       </div>
     );

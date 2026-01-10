@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Clock } from "lucide-react";
-import campusImage from "@/assets/campus.jpg";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Link } from "react-router-dom";
 
@@ -87,11 +86,13 @@ const Campuses = () => {
             </div>
 
             <div className="space-y-6">
-              <img 
-                src={getContent("mutungo", "image", "") || campusImage} 
-                alt="Mutungo Campus" 
-                className="rounded-lg shadow-lg w-full h-[300px] object-cover"
-              />
+              {getContent("mutungo", "image", "") && (
+                <img 
+                  src={getContent("mutungo", "image", "")} 
+                  alt="Mutungo Campus" 
+                  className="rounded-lg shadow-lg w-full h-[300px] object-cover"
+                />
+              )}
               
               <Card>
                 <CardHeader>
@@ -124,11 +125,13 @@ const Campuses = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="order-2 lg:order-1 space-y-6">
-              <img 
-                src={getContent("nsangi", "image", "") || campusImage} 
-                alt="Nsangi Campus" 
-                className="rounded-lg shadow-lg w-full h-[300px] object-cover"
-              />
+              {getContent("nsangi", "image", "") && (
+                <img 
+                  src={getContent("nsangi", "image", "")} 
+                  alt="Nsangi Campus" 
+                  className="rounded-lg shadow-lg w-full h-[300px] object-cover"
+                />
+              )}
               
               <Card>
                 <CardHeader>

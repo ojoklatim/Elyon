@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Users, Award, Heart } from "lucide-react";
-import heroImage from "@/assets/hero-school.jpg";
-import kindergartenImage from "@/assets/kindergarten.jpg";
-import primaryImage from "@/assets/primary.jpg";
 import Hero3D from "@/components/Hero3D";
 import HeroSlideshow from "@/components/HeroSlideshow";
 import Card3D from "@/components/Card3D";
@@ -19,10 +16,10 @@ const Home = () => {
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
         {/* Slideshow Background */}
-        <HeroSlideshow fallbackImage={getContent("hero", "background_image", "") || heroImage} />
+        <HeroSlideshow fallbackImage={getContent("hero", "background_image", "")} />
         
         {/* Transparent Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-primary/50 z-10" />
+        <div className="absolute inset-0 bg-transparent z-10" />
         
         <Hero3D />
         
@@ -185,11 +182,13 @@ const Home = () => {
             >
               <Card3D>
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                  <img 
-                    src={getContent("programs", "kindergarten_image", "") || kindergartenImage} 
-                    alt="Kindergarten students learning" 
-                    className="w-full h-48 object-cover" 
-                  />
+                  {getContent("programs", "kindergarten_image", "") && (
+                    <img 
+                      src={getContent("programs", "kindergarten_image", "")} 
+                      alt="Kindergarten students learning" 
+                      className="w-full h-48 object-cover" 
+                    />
+                  )}
                   <CardContent className="p-6">
                     <h3 className="font-poppins text-2xl font-semibold mb-3">
                       {getContent("programs", "kindergarten_title", "Kindergarten")}
@@ -215,11 +214,13 @@ const Home = () => {
             >
               <Card3D>
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                  <img 
-                    src={getContent("programs", "primary_image", "") || primaryImage} 
-                    alt="Primary school students" 
-                    className="w-full h-48 object-cover" 
-                  />
+                  {getContent("programs", "primary_image", "") && (
+                    <img 
+                      src={getContent("programs", "primary_image", "")} 
+                      alt="Primary school students" 
+                      className="w-full h-48 object-cover" 
+                    />
+                  )}
                   <CardContent className="p-6">
                     <h3 className="font-poppins text-2xl font-semibold mb-3">
                       {getContent("programs", "primary_title", "Primary School")}
