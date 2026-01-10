@@ -1,15 +1,45 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Youtube } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Youtube, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useContactSubmissions } from "@/hooks/useContactSubmissions";
+import { useSchoolLocations } from "@/hooks/useSchoolLocations";
+
 const Contact = () => {
-  const {
-    getContent
-  } = useSiteContent("contact");
-  return <main className="flex-1">
+  const { getContent } = useSiteContent("contact");
+  const { submitContact } = useContactSubmissions();
+  const { locations, loading: locationsLoading } = useSchoolLocations();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const result = await submitContact(formData);
+    if (result.success) {
+      setFormData({
+        full_name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    }
+    setIsSubmitting(false);
+  };
+
+  return (
+    <main className="flex-1">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-accent to-accent/90 text-white py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,81 +69,132 @@ const Contact = () => {
                 </p>
               </div>
 
-              {/* Mutungo Campus Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-poppins text-xl">
-                    {getContent("mutungo", "title", "Mutungo Campus")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Address</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("mutungo", "address", "Mutungo, Kampala, Uganda")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Phone</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("mutungo", "phone", "+256 XXX XXXXXX")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Email</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("mutungo", "email", "mutungo@elyonschool.com")}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Dynamic School Locations */}
+              {locationsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : locations.length > 0 ? (
+                locations.map((location) => (
+                  <Card key={location.id}>
+                    <CardHeader>
+                      <CardTitle className="font-poppins text-xl">
+                        {location.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Address</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {location.address}
+                          </p>
+                        </div>
+                      </div>
+                      {location.phone && (
+                        <div className="flex items-start gap-3">
+                          <Phone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-inter font-medium">Phone</p>
+                            <p className="font-inter text-sm text-muted-foreground">
+                              {location.phone}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {location.email && (
+                        <div className="flex items-start gap-3">
+                          <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-inter font-medium">Email</p>
+                            <p className="font-inter text-sm text-muted-foreground">
+                              {location.email}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <>
+                  {/* Fallback to site content if no locations in database */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="font-poppins text-xl">
+                        {getContent("mutungo", "title", "Mutungo Campus")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Address</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("mutungo", "address", "Mutungo, Kampala, Uganda")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Phone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Phone</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("mutungo", "phone", "+256 XXX XXXXXX")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Email</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("mutungo", "email", "mutungo@elyonschool.com")}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              {/* Nsangi Campus Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-poppins text-xl">
-                    {getContent("nsangi", "title", "Nsangi Campus")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Address</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("nsangi", "address", "Nsangi, Wakiso District, Uganda")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Phone</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("nsangi", "phone", "+256 XXX XXXXXX")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-inter font-medium">Email</p>
-                      <p className="font-inter text-sm text-muted-foreground">
-                        {getContent("nsangi", "email", "nsangi@elyonschool.com")}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="font-poppins text-xl">
+                        {getContent("nsangi", "title", "Nsangi Campus")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Address</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("nsangi", "address", "Nsangi, Wakiso District, Uganda")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Phone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Phone</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("nsangi", "phone", "+256 XXX XXXXXX")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-inter font-medium">Email</p>
+                          <p className="font-inter text-sm text-muted-foreground">
+                            {getContent("nsangi", "email", "nsangi@elyonschool.com")}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
 
               {/* Office Hours */}
               <Card>
@@ -166,34 +247,73 @@ const Contact = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="font-inter">Full Name *</Label>
-                      <Input id="name" placeholder="John Doe" required />
+                      <Input
+                        id="name"
+                        placeholder="John Doe"
+                        required
+                        value={formData.full_name}
+                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="email" className="font-inter">Email Address *</Label>
-                      <Input id="email" type="email" placeholder="john@example.com" required />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="john@example.com"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="phone" className="font-inter">Phone Number</Label>
-                      <Input id="phone" type="tel" placeholder="+256 XXX XXXXXX" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="+256 XXX XXXXXX"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="subject" className="font-inter">Subject *</Label>
-                      <Input id="subject" placeholder="General Inquiry" required />
+                      <Input
+                        id="subject"
+                        placeholder="General Inquiry"
+                        required
+                        value={formData.subject}
+                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="message" className="font-inter">Message *</Label>
-                      <Textarea id="message" placeholder="Tell us how we can help you..." rows={6} required />
+                      <Textarea
+                        id="message"
+                        placeholder="Tell us how we can help you..."
+                        rows={6}
+                        required
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full font-inter font-semibold">
-                      Send Message
+                    <Button type="submit" size="lg" className="w-full font-inter font-semibold" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        "Send Message"
+                      )}
                     </Button>
 
                     <p className="font-inter text-xs text-center text-muted-foreground">
@@ -215,38 +335,77 @@ const Contact = () => {
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Mutungo Map Placeholder */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-poppins text-xl">Mutungo Campus</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-muted rounded-lg h-64 flex items-center justify-center">
-                  <p className="font-inter text-muted-foreground">Google Maps - Mutungo</p>
-                </div>
-                <Button variant="outline" className="w-full mt-4 font-inter">
-                  Get Directions
-                </Button>
-              </CardContent>
-            </Card>
+            {locationsLoading ? (
+              <div className="col-span-2 flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : locations.length > 0 ? (
+              locations.map((location) => (
+                <Card key={location.id}>
+                  <CardHeader>
+                    <CardTitle className="font-poppins text-xl">{location.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {location.google_maps_embed ? (
+                      <div
+                        className="rounded-lg overflow-hidden h-64"
+                        dangerouslySetInnerHTML={{ __html: location.google_maps_embed }}
+                      />
+                    ) : (
+                      <div className="bg-muted rounded-lg h-64 flex items-center justify-center">
+                        <p className="font-inter text-muted-foreground">Map not available</p>
+                      </div>
+                    )}
+                    {location.google_maps_url && (
+                      <a
+                        href={location.google_maps_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="outline" className="w-full mt-4 font-inter">
+                          Get Directions
+                        </Button>
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="font-poppins text-xl">Mutungo Campus</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-muted rounded-lg h-64 flex items-center justify-center">
+                      <p className="font-inter text-muted-foreground">Google Maps - Mutungo</p>
+                    </div>
+                    <Button variant="outline" className="w-full mt-4 font-inter">
+                      Get Directions
+                    </Button>
+                  </CardContent>
+                </Card>
 
-            {/* Nsangi Map Placeholder */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-poppins text-xl">Nsangi Campus</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-muted rounded-lg h-64 flex items-center justify-center">
-                  <p className="font-inter text-muted-foreground">Google Maps - Nsangi</p>
-                </div>
-                <Button variant="outline" className="w-full mt-4 font-inter">
-                  Get Directions
-                </Button>
-              </CardContent>
-            </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="font-poppins text-xl">Nsangi Campus</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-muted rounded-lg h-64 flex items-center justify-center">
+                      <p className="font-inter text-muted-foreground">Google Maps - Nsangi</p>
+                    </div>
+                    <Button variant="outline" className="w-full mt-4 font-inter">
+                      Get Directions
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
         </div>
       </section>
-    </main>;
+    </main>
+  );
 };
+
 export default Contact;

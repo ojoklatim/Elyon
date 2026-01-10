@@ -1,7 +1,7 @@
 import { NavLink } from "./NavLink";
-import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import EnrollNowDialog from "./EnrollNowDialog";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,9 +40,7 @@ const Navigation = () => {
                 {link.label}
               </NavLink>
             ))}
-            <Button size="sm" className="font-inter">
-              Enroll Now
-            </Button>
+            <EnrollNowDialog />
           </div>
 
           {/* Mobile Menu Button */}
@@ -69,9 +67,7 @@ const Navigation = () => {
                 {link.label}
               </NavLink>
             ))}
-            <Button className="w-full font-inter mt-4">
-              Enroll Now
-            </Button>
+            <EnrollNowDialog className="w-full mt-4" />
           </div>
         )}
       </nav>

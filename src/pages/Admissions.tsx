@@ -1,15 +1,53 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useAdmissionApplications } from "@/hooks/useAdmissionApplications";
+import { useSchoolLocations } from "@/hooks/useSchoolLocations";
 import { Link } from "react-router-dom";
 
 const Admissions = () => {
   const { getContent } = useSiteContent("admissions");
+  const { submitApplication } = useAdmissionApplications();
+  const { locations } = useSchoolLocations();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    parent_name: "",
+    phone: "",
+    email: "",
+    child_name: "",
+    child_age: "",
+    program: "",
+    preferred_campus: "",
+    additional_info: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const result = await submitApplication({
+      ...formData,
+      child_age: parseInt(formData.child_age),
+    });
+    if (result.success) {
+      setFormData({
+        parent_name: "",
+        phone: "",
+        email: "",
+        child_name: "",
+        child_age: "",
+        program: "",
+        preferred_campus: "",
+        additional_info: "",
+      });
+    }
+    setIsSubmitting(false);
+  };
 
   return (
     <main className="flex-1">
@@ -199,38 +237,75 @@ const Admissions = () => {
 
             <Card>
               <CardContent className="pt-6">
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="parentName" className="font-inter">Parent/Guardian Name *</Label>
-                      <Input id="parentName" placeholder="John Doe" required />
+                      <Input
+                        id="parentName"
+                        placeholder="John Doe"
+                        required
+                        value={formData.parent_name}
+                        onChange={(e) => setFormData({ ...formData, parent_name: e.target.value })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone" className="font-inter">Phone Number *</Label>
-                      <Input id="phone" type="tel" placeholder="+256 XXX XXXXXX" required />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="+256 XXX XXXXXX"
+                        required
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="email" className="font-inter">Email Address *</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" required />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="childName" className="font-inter">Child's Name *</Label>
-                      <Input id="childName" placeholder="Jane Doe" required />
+                      <Input
+                        id="childName"
+                        placeholder="Jane Doe"
+                        required
+                        value={formData.child_name}
+                        onChange={(e) => setFormData({ ...formData, child_name: e.target.value })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="age" className="font-inter">Child's Age *</Label>
-                      <Input id="age" type="number" placeholder="5" required />
+                      <Input
+                        id="age"
+                        type="number"
+                        placeholder="5"
+                        required
+                        value={formData.child_age}
+                        onChange={(e) => setFormData({ ...formData, child_age: e.target.value })}
+                      />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="program" className="font-inter">Program of Interest *</Label>
-                      <Select>
+                      <Select
+                        value={formData.program}
+                        onValueChange={(value) => setFormData({ ...formData, program: value })}
+                        required
+                      >
                         <SelectTrigger id="program">
                           <SelectValue placeholder="Select program" />
                         </SelectTrigger>
@@ -249,13 +324,27 @@ const Admissions = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="campus" className="font-inter">Preferred Campus *</Label>
-                      <Select>
+                      <Select
+                        value={formData.preferred_campus}
+                        onValueChange={(value) => setFormData({ ...formData, preferred_campus: value })}
+                        required
+                      >
                         <SelectTrigger id="campus">
                           <SelectValue placeholder="Select campus" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="mutungo">Mutungo</SelectItem>
-                          <SelectItem value="nsangi">Nsangi</SelectItem>
+                          {locations.length > 0 ? (
+                            locations.map((location) => (
+                              <SelectItem key={location.id} value={location.name.toLowerCase()}>
+                                {location.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <>
+                              <SelectItem value="mutungo">Mutungo</SelectItem>
+                              <SelectItem value="nsangi">Nsangi</SelectItem>
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -263,15 +352,24 @@ const Admissions = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="message" className="font-inter">Additional Information</Label>
-                    <Textarea 
-                      id="message" 
+                    <Textarea
+                      id="message"
                       placeholder="Tell us anything else you'd like us to know..."
                       rows={4}
+                      value={formData.additional_info}
+                      onChange={(e) => setFormData({ ...formData, additional_info: e.target.value })}
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full font-inter font-semibold">
-                    Submit Inquiry
+                  <Button type="submit" size="lg" className="w-full font-inter font-semibold" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Inquiry"
+                    )}
                   </Button>
 
                   <p className="font-inter text-xs text-center text-muted-foreground">

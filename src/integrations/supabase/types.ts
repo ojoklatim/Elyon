@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      admission_applications: {
+        Row: {
+          additional_info: string | null
+          child_age: number
+          child_name: string
+          created_at: string
+          email: string
+          id: string
+          parent_name: string
+          phone: string
+          preferred_campus: string
+          program: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          additional_info?: string | null
+          child_age: number
+          child_name: string
+          created_at?: string
+          email: string
+          id?: string
+          parent_name: string
+          phone: string
+          preferred_campus: string
+          program: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          additional_info?: string | null
+          child_age?: number
+          child_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          parent_name?: string
+          phone?: string
+          preferred_campus?: string
+          program?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blogs: {
         Row: {
           content: string | null
@@ -40,6 +85,42 @@ export type Database = {
           id?: string
           published?: boolean
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string
+          phone: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message: string
+          phone?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string
+          phone?: string | null
+          status?: string
+          subject?: string
           updated_at?: string
         }
         Relationships: []
@@ -106,6 +187,48 @@ export type Database = {
           image_url?: string
           is_visible?: boolean
           title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      school_locations: {
+        Row: {
+          address: string
+          created_at: string
+          display_order: number
+          email: string | null
+          google_maps_embed: string | null
+          google_maps_url: string | null
+          id: string
+          is_visible: boolean
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          google_maps_embed?: string | null
+          google_maps_url?: string | null
+          id?: string
+          is_visible?: boolean
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          google_maps_embed?: string | null
+          google_maps_url?: string | null
+          id?: string
+          is_visible?: boolean
+          name?: string
+          phone?: string | null
           updated_at?: string
         }
         Relationships: []
