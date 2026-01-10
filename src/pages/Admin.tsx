@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, LogOut, Images, FileText, Home, Info, BookOpen, MapPin, GraduationCap, Phone, Video, Newspaper, Presentation } from "lucide-react";
+import { Loader2, LogOut, Images, FileText, Home, Info, BookOpen, MapPin, GraduationCap, Phone, Video, Newspaper, Presentation, Mail, Users } from "lucide-react";
 import AdminGallery from "@/components/admin/AdminGallery";
 import AdminContentEditor from "@/components/admin/AdminContentEditor";
 import AdminVlogs from "@/components/admin/AdminVlogs";
 import AdminBlogs from "@/components/admin/AdminBlogs";
 import AdminHeroSlides from "@/components/admin/AdminHeroSlides";
+import AdminContactSubmissions from "@/components/admin/AdminContactSubmissions";
+import AdminAdmissions from "@/components/admin/AdminAdmissions";
+import AdminLocations from "@/components/admin/AdminLocations";
 
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -75,7 +78,7 @@ const Admin = () => {
       {/* Admin Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="hero" className="space-y-6">
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
+          <TabsList className="flex flex-wrap gap-2 h-auto p-2">
             <TabsTrigger value="hero" className="font-inter">
               <Presentation className="h-4 w-4 mr-2" />
               Hero Slides
@@ -96,6 +99,18 @@ const Admin = () => {
               <Newspaper className="h-4 w-4 mr-2" />
               Blogs
             </TabsTrigger>
+            <TabsTrigger value="admissions" className="font-inter">
+              <Users className="h-4 w-4 mr-2" />
+              Admissions
+            </TabsTrigger>
+            <TabsTrigger value="contacts" className="font-inter">
+              <Mail className="h-4 w-4 mr-2" />
+              Contacts
+            </TabsTrigger>
+            <TabsTrigger value="locations" className="font-inter">
+              <MapPin className="h-4 w-4 mr-2" />
+              Locations
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="hero">
@@ -103,7 +118,6 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">
-            {/* Page Selector */}
             <div className="flex flex-wrap gap-2">
               {pages.map((page) => (
                 <Button
@@ -118,8 +132,6 @@ const Admin = () => {
                 </Button>
               ))}
             </div>
-
-            {/* Content Editor */}
             <AdminContentEditor page={selectedPage} />
           </TabsContent>
 
@@ -133,6 +145,18 @@ const Admin = () => {
 
           <TabsContent value="blogs">
             <AdminBlogs />
+          </TabsContent>
+
+          <TabsContent value="admissions">
+            <AdminAdmissions />
+          </TabsContent>
+
+          <TabsContent value="contacts">
+            <AdminContactSubmissions />
+          </TabsContent>
+
+          <TabsContent value="locations">
+            <AdminLocations />
           </TabsContent>
         </Tabs>
       </div>
