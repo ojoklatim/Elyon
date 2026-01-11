@@ -25,7 +25,10 @@ const Navigation = () => {
         <div className="flex h-16 items-center justify-between">
           <NavLink to="/" className="flex items-center space-x-3">
             <img src={schoolBadge} alt="Elyon School Badge" className="h-12 w-12 object-contain" />
-            <span className="font-poppins text-lg font-bold text-primary hidden sm:block">Elyon Kindergarten & Primary School</span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-poppins text-lg font-bold text-primary">Elyon Kindergarten & Primary School</span>
+              <span className="font-inter text-xs text-muted-foreground italic">"In God We Trust"</span>
+            </div>
           </NavLink>
 
           {/* Desktop Navigation */}
