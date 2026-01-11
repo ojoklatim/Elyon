@@ -2,6 +2,7 @@ import { NavLink } from "./NavLink";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import EnrollNowDialog from "./EnrollNowDialog";
+import schoolBadge from "@/assets/school-badge.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,10 +23,9 @@ const Navigation = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <NavLink to="/" className="flex items-center space-x-2">
-            <div className="flex flex-col">
-              <span className="font-poppins text-xl font-bold text-primary">Elyon Kindergarten & Primary School</span>
-            </div>
+          <NavLink to="/" className="flex items-center space-x-3">
+            <img src={schoolBadge} alt="Elyon School Badge" className="h-12 w-12 object-contain" />
+            <span className="font-poppins text-lg font-bold text-primary hidden sm:block">Elyon Kindergarten & Primary School</span>
           </NavLink>
 
           {/* Desktop Navigation */}
