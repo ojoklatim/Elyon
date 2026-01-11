@@ -9,7 +9,10 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <img src={schoolBadge} alt="Elyon School Badge" className="h-16 w-16 object-contain bg-white rounded-full p-1" />
-              <h3 className="font-poppins text-lg font-semibold">Elyon Kindergarten & Primary School</h3>
+              <div className="flex flex-col">
+                <h3 className="font-poppins text-lg font-semibold">Elyon Kindergarten & Primary School</h3>
+                <p className="font-inter text-sm italic text-primary-foreground/90">"In God We Trust"</p>
+              </div>
             </div>
             <p className="font-inter text-sm text-primary-foreground/80">
               Nurturing young minds with quality Christian education in Kampala, Uganda.
