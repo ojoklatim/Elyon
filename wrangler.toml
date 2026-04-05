@@ -1,0 +1,16 @@
+name = "elyon"
+type = "javascript"
+account_id = ""
+workers_dev = true
+main = "dist/index.html"
+build = { command = "npm run build", cwd = "." }
+site = { bucket = "dist" }
+
+[env.production]
+name = "elyon-production"
+
+[env.staging]
+name = "elyon-staging"
+
+[[triggers.crons]]
+cron = "0 0 * * *"
