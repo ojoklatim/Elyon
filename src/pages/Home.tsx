@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Users, Award, Heart } from "lucide-react";
-import Hero3D from "@/components/Hero3D";
-import HeroSlideshow from "@/components/HeroSlideshow";
-import Card3D from "@/components/Card3D";
+import { lazy } from "react";
+const Hero3D = lazy(() => import("@/components/Hero3D"));
+const HeroSlideshow = lazy(() => import("@/components/HeroSlideshow"));
+const Card3D = lazy(() => import("@/components/Card3D"));
 import { motion } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Link } from "react-router-dom";
@@ -16,12 +17,16 @@ const Home = () => {
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
         {/* Slideshow Background */}
-        <HeroSlideshow fallbackImage={getContent("hero", "background_image", "")} />
+        <Suspense fallback={<div className="absolute inset-0 bg-muted animate-pulse" />}>
+          <HeroSlideshow fallbackImage={getContent("hero", "background_image", "")} />
+        </Suspense>
         
         {/* Transparent Overlay */}
         <div className="absolute inset-0 bg-transparent z-10" />
         
-        <Hero3D />
+        <Suspense fallback={null}>
+          <Hero3D />
+        </Suspense>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -87,81 +92,89 @@ const Home = () => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card3D>
-              <Card className="border-2 hover:border-primary transition-colors h-full">
-                <CardContent className="pt-6 text-center">
-                  <motion.div 
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
-                  >
-                    <BookOpen className="h-6 w-6 text-primary" />
-                  </motion.div>
-                  <h3 className="font-poppins text-xl font-semibold mb-2">
-                    {getContent("why_choose", "card1_title", "Quality Education")}
-                  </h3>
-                  <p className="font-inter text-sm text-muted-foreground">
-                    {getContent("why_choose", "card1_desc", "Comprehensive curriculum from Baby Class to Primary 7")}
-                  </p>
-                </CardContent>
-              </Card>
-            </Card3D>
+            <Suspense fallback={<Card className="h-full animate-pulse" />}>
+              <Card3D>
+                <Card className="border-2 hover:border-primary transition-colors h-full">
+                  <CardContent className="pt-6 text-center">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <BookOpen className="h-6 w-6 text-primary" />
+                    </motion.div>
+                    <h3 className="font-poppins text-xl font-semibold mb-2">
+                      {getContent("why_choose", "card1_title", "Quality Education")}
+                    </h3>
+                    <p className="font-inter text-sm text-muted-foreground">
+                      {getContent("why_choose", "card1_desc", "Comprehensive curriculum from Baby Class to Primary 7")}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Card3D>
+            </Suspense>
 
-            <Card3D>
-              <Card className="border-2 hover:border-secondary transition-colors h-full">
-                <CardContent className="pt-6 text-center">
-                  <motion.div 
-                    whileHover={{ scale: 1.1, rotate: -5 }}
-                    className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4"
-                  >
-                    <Heart className="h-6 w-6 text-secondary" />
-                  </motion.div>
-                  <h3 className="font-poppins text-xl font-semibold mb-2">
-                    {getContent("why_choose", "card2_title", "Christian Values")}
-                  </h3>
-                  <p className="font-inter text-sm text-muted-foreground">
-                    {getContent("why_choose", "card2_desc", "Education grounded in faith and moral development")}
-                  </p>
-                </CardContent>
-              </Card>
-            </Card3D>
+            <Suspense fallback={<Card className="h-full animate-pulse" />}>
+              <Card3D>
+                <Card className="border-2 hover:border-secondary transition-colors h-full">
+                  <CardContent className="pt-6 text-center">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: -5 }}
+                      className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <Heart className="h-6 w-6 text-secondary" />
+                    </motion.div>
+                    <h3 className="font-poppins text-xl font-semibold mb-2">
+                      {getContent("why_choose", "card2_title", "Christian Values")}
+                    </h3>
+                    <p className="font-inter text-sm text-muted-foreground">
+                      {getContent("why_choose", "card2_desc", "Education grounded in faith and moral development")}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Card3D>
+            </Suspense>
 
-            <Card3D>
-              <Card className="border-2 hover:border-accent transition-colors h-full">
-                <CardContent className="pt-6 text-center">
-                  <motion.div 
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4"
-                  >
-                    <Users className="h-6 w-6 text-accent" />
-                  </motion.div>
-                  <h3 className="font-poppins text-xl font-semibold mb-2">
-                    {getContent("why_choose", "card3_title", "Caring Teachers")}
-                  </h3>
-                  <p className="font-inter text-sm text-muted-foreground">
-                    {getContent("why_choose", "card3_desc", "Dedicated educators who nurture every child's potential")}
-                  </p>
-                </CardContent>
-              </Card>
-            </Card3D>
+            <Suspense fallback={<Card className="h-full animate-pulse" />}>
+              <Card3D>
+                <Card className="border-2 hover:border-accent transition-colors h-full">
+                  <CardContent className="pt-6 text-center">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <Users className="h-6 w-6 text-accent" />
+                    </motion.div>
+                    <h3 className="font-poppins text-xl font-semibold mb-2">
+                      {getContent("why_choose", "card3_title", "Caring Teachers")}
+                    </h3>
+                    <p className="font-inter text-sm text-muted-foreground">
+                      {getContent("why_choose", "card3_desc", "Dedicated educators who nurture every child's potential")}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Card3D>
+            </Suspense>
 
-            <Card3D>
-              <Card className="border-2 hover:border-primary transition-colors h-full">
-                <CardContent className="pt-6 text-center">
-                  <motion.div 
-                    whileHover={{ scale: 1.1, rotate: -5 }}
-                    className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
-                  >
-                    <Award className="h-6 w-6 text-primary" />
-                  </motion.div>
-                  <h3 className="font-poppins text-xl font-semibold mb-2">
-                    {getContent("why_choose", "card4_title", "Two Campuses")}
-                  </h3>
-                  <p className="font-inter text-sm text-muted-foreground">
-                    {getContent("why_choose", "card4_desc", "Convenient locations in Mutungo and Nsangi")}
-                  </p>
-                </CardContent>
-              </Card>
-            </Card3D>
+            <Suspense fallback={<Card className="h-full animate-pulse" />}>
+              <Card3D>
+                <Card className="border-2 hover:border-primary transition-colors h-full">
+                  <CardContent className="pt-6 text-center">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: -5 }}
+                      className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <Award className="h-6 w-6 text-primary" />
+                    </motion.div>
+                    <h3 className="font-poppins text-xl font-semibold mb-2">
+                      {getContent("why_choose", "card4_title", "Two Campuses")}
+                    </h3>
+                    <p className="font-inter text-sm text-muted-foreground">
+                      {getContent("why_choose", "card4_desc", "Convenient locations in Mutungo and Nsangi")}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Card3D>
+            </Suspense>
           </div>
         </div>
       </section>
@@ -180,30 +193,32 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card3D>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                  {getContent("programs", "kindergarten_image", "") && (
-                    <img 
-                      src={getContent("programs", "kindergarten_image", "")} 
-                      alt="Kindergarten students learning" 
-                      className="w-full h-48 object-cover" 
-                    />
-                  )}
-                  <CardContent className="p-6">
-                    <h3 className="font-poppins text-2xl font-semibold mb-3">
-                      {getContent("programs", "kindergarten_title", "Kindergarten")}
-                    </h3>
-                    <p className="font-inter text-muted-foreground mb-4">
-                      {getContent("programs", "kindergarten_desc", "Baby Class, Nursery, and Early Learning programs designed for ages 2-5")}
-                    </p>
-                    <Link to="/programs">
-                      <Button variant="outline" className="font-inter hover:scale-105 transition-transform">
-                        Learn More
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              </Card3D>
+              <Suspense fallback={<Card className="h-full animate-pulse" />}>
+                <Card3D>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                    {getContent("programs", "kindergarten_image", "") && (
+                      <img 
+                        src={getContent("programs", "kindergarten_image", "")} 
+                        alt="Kindergarten students learning" 
+                        className="w-full h-48 object-cover" 
+                      />
+                    )}
+                    <CardContent className="p-6">
+                      <h3 className="font-poppins text-2xl font-semibold mb-3">
+                        {getContent("programs", "kindergarten_title", "Kindergarten")}
+                      </h3>
+                      <p className="font-inter text-muted-foreground mb-4">
+                        {getContent("programs", "kindergarten_desc", "Baby Class, Nursery, and Early Learning programs designed for ages 2-5")}
+                      </p>
+                      <Link to="/programs">
+                        <Button variant="outline" className="font-inter hover:scale-105 transition-transform">
+                          Learn More
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </Card3D>
+              </Suspense>
             </motion.div>
 
             <motion.div
@@ -212,30 +227,32 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card3D>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                  {getContent("programs", "primary_image", "") && (
-                    <img 
-                      src={getContent("programs", "primary_image", "")} 
-                      alt="Primary school students" 
-                      className="w-full h-48 object-cover" 
-                    />
-                  )}
-                  <CardContent className="p-6">
-                    <h3 className="font-poppins text-2xl font-semibold mb-3">
-                      {getContent("programs", "primary_title", "Primary School")}
-                    </h3>
-                    <p className="font-inter text-muted-foreground mb-4">
-                      {getContent("programs", "primary_desc", "Primary 1 through Primary 7 with emphasis on academic excellence")}
-                    </p>
-                    <Link to="/programs">
-                      <Button variant="outline" className="font-inter hover:scale-105 transition-transform">
-                        Learn More
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              </Card3D>
+              <Suspense fallback={<Card className="h-full animate-pulse" />}>
+                <Card3D>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                    {getContent("programs", "primary_image", "") && (
+                      <img 
+                        src={getContent("programs", "primary_image", "")} 
+                        alt="Primary school students" 
+                        className="w-full h-48 object-cover" 
+                      />
+                    )}
+                    <CardContent className="p-6">
+                      <h3 className="font-poppins text-2xl font-semibold mb-3">
+                        {getContent("programs", "primary_title", "Primary School")}
+                      </h3>
+                      <p className="font-inter text-muted-foreground mb-4">
+                        {getContent("programs", "primary_desc", "Primary 1 through Primary 7 with emphasis on academic excellence")}
+                      </p>
+                      <Link to="/programs">
+                        <Button variant="outline" className="font-inter hover:scale-105 transition-transform">
+                          Learn More
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </Card3D>
+              </Suspense>
             </motion.div>
           </div>
         </div>

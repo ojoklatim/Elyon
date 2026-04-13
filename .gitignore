@@ -12,10 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Environment variables (set in Cloudflare Pages dashboard)
+.env
+.env.local
+.env.production
+.env.*.local
+
 # Cloudflare Pages
 .wrangler/
-.env.local
-.env.*.local
 
 # Editor directories and files
 .vscode/*
