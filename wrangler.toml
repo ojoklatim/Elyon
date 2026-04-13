@@ -1,4 +1,12 @@
 name = "elyon"
-compatibility_date = "2024-04-13"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
 
 pages_build_output_dir = "dist"
+
+[env.production]
+
+[build]
+command = "npm run build"
+cwd = "./"
+dest = "dist"

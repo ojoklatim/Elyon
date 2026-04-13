@@ -5,6 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   base: "/",
+  publicDir: "public",
   server: {
     host: "::",
     port: 8080,
@@ -20,6 +21,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    target: "esnext",
+    minify: "esbuild",
     // Cloudflare Pages has a 25MB max asset size; optimize chunks
     rollupOptions: {
       output: {
