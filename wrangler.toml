@@ -1,6 +1,4 @@
 name = "elyon"
 compatibility_date = "2024-04-13"
 
-[pages_build_config]
-build_command = "npm run build"
-destination_dir = "dist"
+pages_build_output_dir = "dist"
