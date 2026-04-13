@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Users, Award, Heart } from "lucide-react";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 const Hero3D = lazy(() => import("@/components/Hero3D"));
 const HeroSlideshow = lazy(() => import("@/components/HeroSlideshow"));
 const Card3D = lazy(() => import("@/components/Card3D"));
