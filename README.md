@@ -1,75 +1,46 @@
-# Welcome to your Lovable project
+# Elyon Kindergarten and Primary School
 
-## Project info
+This is the official web application for Elyon Kindergarten and Primary School, featuring a dynamic frontend built with React and Vite, paired with a robust Supabase backend that provides full administrative control over the website's content.
 
-**URL**: https://lovable.dev/projects/aaf08bba-b4f5-4a1d-8cb0-a1ac9691df4b
+## Features
 
-## How can I edit this code?
+- **Public Features:**
+  - Modern, responsive landing page with dynamic Hero Slides.
+  - Comprehensive details about Programs (Kindergarten, Primary) and Campuses (Mutungo, Nsangi).
+  - Online Admissions Inquiry Form.
+  - Institutional Organogram with dynamic staff photos and profiles.
+  - School Vlog, Photo Gallery, and Blog pages.
+  - Contact Forms and dynamic social media links.
 
-There are several ways of editing your application.
+- **Admin Dashboard Integration (`/admin`):**
+  - **Page Content Editor:** Allows admins to edit text snippets, headings, and descriptions for all pages instantly.
+  - **Media Management:** Direct Supabase storage integration for updating organogram photos, gallery images, and blog covers.
+  - **Applications & Submissions:** Manage public admission inquiries and contact submissions directly from the dashboard.
+  - **Dynamic Locations:** Manage campuses, interactive maps, and contact details.
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aaf08bba-b4f5-4a1d-8cb0-a1ac9691df4b) and start prompting.
+- **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn-ui
+- **Backend (BaaS):** Supabase (Auth, PostgreSQL DB, Storage, RLS)
+- **Routing:** React Router DOM
+- **Forms & Validation:** React Hook Form, zod
 
-Changes made via Lovable will be committed automatically to this repo.
+## Initial Setup & Database Seeding
 
-**Use your preferred IDE**
+To connect this application to a completely new Supabase instance:
+1. Copy your `.env` variables from Supabase (`VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`).
+2. Run the provided master SQL schema (`supabase_master_schema.sql` or equivalent) in the Supabase SQL editor to create all the necessary tables, Row Level Security (RLS) policies, and triggers.
+3. Manually create the 3 public storage buckets in Supabase: `page-images`, `blogs`, `gallery`.
+4. Run the data seeding script (`site_content_seed.sql`) to pre-populate all the default text variables into the CMS.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# Step 1: Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 2: Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/aaf08bba-b4f5-4a1d-8cb0-a1ac9691df4b) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-# Elyon
-# mbuya-parents
+The application will be running locally at `http://localhost:8080/`. You can log into the `/admin` portal using the officially generated admin credentials in your Supabase Auth configuration.

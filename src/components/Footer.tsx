@@ -1,7 +1,10 @@
 import { Facebook, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
 import schoolBadge from "@/assets/school-badge.png";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Footer = () => {
+  const { getContent } = useSiteContent("contact");
+
   return <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -52,7 +55,23 @@ const Footer = () => {
           {/* Social Media */}
           <div>
             <h3 className="font-poppins text-lg font-semibold mb-4">Follow Us</h3>
-            
+            <div className="flex gap-4">
+              <a href={getContent("social", "instagram", "#")} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all duration-300">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href={getContent("social", "youtube", "#")} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all duration-300">
+                <Youtube className="h-5 w-5" />
+              </a>
+              <a href={getContent("social", "x_url", "#")} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all duration-300">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
 

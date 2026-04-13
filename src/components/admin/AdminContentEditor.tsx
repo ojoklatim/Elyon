@@ -146,6 +146,34 @@ const PAGE_CONTENT_STRUCTURE: Record<string, ContentSection[]> = {
         { key: "card4_desc", label: "Card 4 Description", type: "textarea" },
       ],
     },
+    {
+      section: "organogram",
+      label: "Institutional Organogram",
+      fields: [
+        { key: "director_name", label: "Executive Director Name", type: "text", placeholder: "Director's Office" },
+        { key: "director_photo", label: "Executive Director Photo", type: "image" },
+        { key: "principal_name", label: "Principal Name", type: "text", placeholder: "Principal's Office" },
+        { key: "principal_photo", label: "Principal Photo", type: "image" },
+        
+        { key: "mutungo_headmaster_name", label: "Mutungo Headmaster Name", type: "text", placeholder: "Mutungo Head" },
+        { key: "mutungo_headmaster_photo", label: "Mutungo Headmaster Photo", type: "image" },
+        { key: "mutungo_admin_name", label: "Mutungo Deputy Admin Name", type: "text" },
+        { key: "mutungo_admin_photo", label: "Mutungo Deputy Admin Photo", type: "image" },
+        { key: "mutungo_curriculum_name", label: "Mutungo Curriculum Head Name", type: "text" },
+        { key: "mutungo_curriculum_photo", label: "Mutungo Curriculum Head Photo", type: "image" },
+        { key: "mutungo_academics_name", label: "Mutungo Deputy Academics Name", type: "text" },
+        { key: "mutungo_academics_photo", label: "Mutungo Deputy Academics Photo", type: "image" },
+
+        { key: "nsangi_headmaster_name", label: "Nsangi Headmaster Name", type: "text", placeholder: "Nsangi Head" },
+        { key: "nsangi_headmaster_photo", label: "Nsangi Headmaster Photo", type: "image" },
+        { key: "nsangi_admin_name", label: "Nsangi Deputy Admin Name", type: "text" },
+        { key: "nsangi_admin_photo", label: "Nsangi Deputy Admin Photo", type: "image" },
+        { key: "nsangi_curriculum_name", label: "Nsangi Curriculum Head Name", type: "text" },
+        { key: "nsangi_curriculum_photo", label: "Nsangi Curriculum Head Photo", type: "image" },
+        { key: "nsangi_academics_name", label: "Nsangi Deputy Academics Name", type: "text" },
+        { key: "nsangi_academics_photo", label: "Nsangi Deputy Academics Photo", type: "image" },
+      ],
+    },
   ],
   programs: [
     {
@@ -375,6 +403,7 @@ const PAGE_CONTENT_STRUCTURE: Record<string, ContentSection[]> = {
         { key: "facebook", label: "Facebook URL", type: "text", placeholder: "https://facebook.com/..." },
         { key: "instagram", label: "Instagram URL", type: "text", placeholder: "https://instagram.com/..." },
         { key: "youtube", label: "YouTube URL", type: "text", placeholder: "https://youtube.com/..." },
+        { key: "x_url", label: "X (Twitter) URL", type: "text", placeholder: "https://x.com/..." },
       ],
     },
     {

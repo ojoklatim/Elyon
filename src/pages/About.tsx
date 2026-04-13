@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Target, Eye, Award } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { Organogram } from "@/components/Organogram";
 
 const About = () => {
   const { getContent } = useSiteContent("about");
@@ -20,6 +21,9 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      {/* Organizational Structure */}
+      <Organogram />
 
       {/* Mission, Vision, Values */}
       <section className="py-16">

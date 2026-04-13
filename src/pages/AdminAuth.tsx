@@ -16,11 +16,10 @@ const AdminAuth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
   // TEMPORARY: Universal admin - any authenticated user can access
-  const { signIn, signUp, user, loading } = useAuth();
+  const { signIn, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -62,34 +61,18 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
-        const { error } = await signUp(email, password);
-        if (error) {
-          toast({
-            title: "Sign Up Failed",
-            description: error.message || "Could not create account",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Account Created",
-            description: "Your account has been created. Please contact the administrator for admin access.",
-          });
-        }
+      const { error } = await signIn(email, password);
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message || "Invalid email or password",
+          variant: "destructive",
+        });
       } else {
-        const { error } = await signIn(email, password);
-        if (error) {
-          toast({
-            title: "Login Failed",
-            description: error.message || "Invalid email or password",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Welcome Back",
-            description: "You have successfully logged in",
-          });
-        }
+        toast({
+          title: "Welcome Back",
+          description: "You have successfully logged in",
+        });
       }
     } catch (err) {
       toast({
@@ -117,12 +100,10 @@ const AdminAuth = () => {
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="font-poppins text-2xl">
-                {isSignUp ? "Create Admin Account" : "Admin Login"}
+                Admin Login
               </CardTitle>
               <CardDescription className="font-inter">
-                {isSignUp 
-                  ? "Create an account to access the admin dashboard" 
-                  : "Sign in with any email and password to access admin"}
+                Sign in with your email and password to access the admin dashboard
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -165,24 +146,12 @@ const AdminAuth = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isSignUp ? "Creating Account..." : "Signing In..."}
+                      Signing In...
                     </>
                   ) : (
-                    isSignUp ? "Create Account" : "Sign In"
+                    "Sign In"
                   )}
                 </Button>
-
-                <div className="text-center mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsSignUp(!isSignUp)}
-                    className="text-sm text-primary hover:underline font-inter"
-                  >
-                    {isSignUp 
-                      ? "Already have an account? Sign in" 
-                      : "Need an account? Sign up"}
-                  </button>
-                </div>
               </form>
             </CardContent>
           </Card>
