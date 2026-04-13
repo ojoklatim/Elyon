@@ -17,11 +17,19 @@ import {
 
 import { useSiteContent } from "@/hooks/useSiteContent";
 
+interface OrgItem {
+  name: string;
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  children?: OrgItem[];
+}
+
 /**
  * OrgNode Component
  * Renders individual nodes in the organizational hierarchy with recursive children.
  */
-const OrgNode = ({ item, isRoot = false, delay = 0 }: { item: any; isRoot?: boolean; delay?: number }) => {
+const OrgNode = ({ item, isRoot = false, delay = 0 }: { item: OrgItem; isRoot?: boolean; delay?: number }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
@@ -101,7 +109,7 @@ const OrgNode = ({ item, isRoot = false, delay = 0 }: { item: any; isRoot?: bool
             ></div>
           )}
          
-          {item.children.map((child: any, index: number) => (
+          {item.children.map((child: OrgItem, index: number) => (
             <div key={index} className="flex flex-col items-center">
               {/* Vertical line above child */}
               <div className="h-8 w-0.5 bg-stone-300 mb-0"></div>
