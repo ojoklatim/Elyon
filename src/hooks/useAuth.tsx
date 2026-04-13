@@ -50,6 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setLoading(false);
+    }).catch((err) => {
+      console.warn("Supabase auth not fully configured or offline:", err);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
