@@ -24,6 +24,10 @@ export const useGallery = (adminMode: boolean = false) => {
   }, [adminMode]);
 
   const fetchImages = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase
         .from("gallery_images")
@@ -51,6 +55,14 @@ export const useGallery = (adminMode: boolean = false) => {
   };
 
   const uploadImage = async (file: File, title: string, description: string, category: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
@@ -101,6 +113,14 @@ export const useGallery = (adminMode: boolean = false) => {
   };
 
   const updateImage = async (id: string, updates: Partial<GalleryImage>) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase
         .from("gallery_images")
@@ -128,6 +148,14 @@ export const useGallery = (adminMode: boolean = false) => {
   };
 
   const deleteImage = async (id: string, imageUrl: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       // Extract file path from URL
       const urlParts = imageUrl.split("/gallery/");
@@ -162,6 +190,14 @@ export const useGallery = (adminMode: boolean = false) => {
   };
 
   const replaceImage = async (id: string, oldImageUrl: string, newFile: File) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       // Delete old image from storage
       const urlParts = oldImageUrl.split("/gallery/");

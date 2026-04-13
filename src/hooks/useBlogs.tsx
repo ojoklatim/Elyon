@@ -22,6 +22,10 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
   }, [includeUnpublished]);
 
   const fetchBlogs = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase
         .from("blogs")
@@ -49,6 +53,9 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
   };
 
   const uploadCoverImage = async (file: File) => {
+    if (!supabase) {
+      return { success: false, url: null, error: new Error("Supabase is not configured") };
+    }
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
@@ -77,6 +84,14 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
     coverImage?: string | null,
     published: boolean = false
   ) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase.from("blogs").insert({
         title,
@@ -106,6 +121,14 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
   };
 
   const updateBlog = async (id: string, updates: Partial<Blog>) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase
         .from("blogs")
@@ -133,6 +156,14 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
   };
 
   const deleteBlog = async (id: string, coverImageUrl?: string | null) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       // Delete cover image from storage if exists
       if (coverImageUrl) {

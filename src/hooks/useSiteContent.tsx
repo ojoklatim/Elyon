@@ -19,6 +19,10 @@ export const useSiteContent = (page?: string) => {
   }, [page]);
 
   const fetchContent = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase.from("site_content").select("*");
       
@@ -60,6 +64,10 @@ export const useSiteContent = (page?: string) => {
     value: string,
     contentType: string = "text"
   ) => {
+    if (!supabase) {
+      console.error("Supabase is not configured. Please set environment variables.");
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase
         .from("site_content")

@@ -23,6 +23,10 @@ export const useAdmissionApplications = () => {
   const { toast } = useToast();
 
   const fetchApplications = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from("admission_applications")
@@ -52,6 +56,14 @@ export const useAdmissionApplications = () => {
     preferred_campus: string;
     additional_info?: string;
   }) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase.from("admission_applications").insert([data]);
 
@@ -75,6 +87,14 @@ export const useAdmissionApplications = () => {
   };
 
   const updateApplicationStatus = async (id: string, status: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("admission_applications")
@@ -102,6 +122,14 @@ export const useAdmissionApplications = () => {
   };
 
   const deleteApplication = async (id: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("admission_applications")

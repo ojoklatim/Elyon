@@ -20,6 +20,10 @@ export const useContactSubmissions = () => {
   const { toast } = useToast();
 
   const fetchSubmissions = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from("contact_submissions")
@@ -46,6 +50,14 @@ export const useContactSubmissions = () => {
     subject: string;
     message: string;
   }) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase.from("contact_submissions").insert([data]);
 
@@ -69,6 +81,14 @@ export const useContactSubmissions = () => {
   };
 
   const updateSubmissionStatus = async (id: string, status: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("contact_submissions")
@@ -96,6 +116,14 @@ export const useContactSubmissions = () => {
   };
 
   const deleteSubmission = async (id: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("contact_submissions")

@@ -9,6 +9,16 @@ export const usePageImages = () => {
   const uploadImage = async (file: File, page: string, section: string) => {
     setUploading(true);
     
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      setUploading(false);
+      return { success: false, url: null };
+    }
+    
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${page}/${section}-${Date.now()}.${fileExt}`;

@@ -22,6 +22,10 @@ export const useSchoolLocations = (adminMode: boolean = false) => {
   const { toast } = useToast();
 
   const fetchLocations = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase
         .from("school_locations")
@@ -58,6 +62,14 @@ export const useSchoolLocations = (adminMode: boolean = false) => {
     is_visible?: boolean;
     display_order?: number;
   }) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase.from("school_locations").insert([data]);
 
@@ -82,6 +94,14 @@ export const useSchoolLocations = (adminMode: boolean = false) => {
   };
 
   const updateLocation = async (id: string, data: Partial<SchoolLocation>) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("school_locations")
@@ -109,6 +129,14 @@ export const useSchoolLocations = (adminMode: boolean = false) => {
   };
 
   const deleteLocation = async (id: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false };
+    }
     try {
       const { error } = await supabase
         .from("school_locations")

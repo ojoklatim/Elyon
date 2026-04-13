@@ -22,6 +22,10 @@ export const useHeroSlides = (adminMode: boolean = false) => {
   }, [adminMode]);
 
   const fetchSlides = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase
         .from("hero_slides")
@@ -49,6 +53,14 @@ export const useHeroSlides = (adminMode: boolean = false) => {
   };
 
   const uploadSlide = async (file: File, title?: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
@@ -97,6 +109,14 @@ export const useHeroSlides = (adminMode: boolean = false) => {
   };
 
   const updateSlide = async (id: string, updates: Partial<HeroSlide>) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase
         .from("hero_slides")
@@ -124,6 +144,14 @@ export const useHeroSlides = (adminMode: boolean = false) => {
   };
 
   const deleteSlide = async (id: string, imageUrl: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       // Extract file path from URL
       const urlParts = imageUrl.split("/hero-images/");
@@ -158,6 +186,14 @@ export const useHeroSlides = (adminMode: boolean = false) => {
   };
 
   const replaceSlideImage = async (id: string, oldImageUrl: string, newFile: File) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       // Delete old image from storage
       const urlParts = oldImageUrl.split("/hero-images/");

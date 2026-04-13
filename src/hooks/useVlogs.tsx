@@ -25,6 +25,10 @@ export const useVlogs = (includeHidden: boolean = false) => {
   }, [includeHidden]);
 
   const fetchVlogs = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     try {
       let query = supabase
         .from("vlogs")
@@ -59,6 +63,14 @@ export const useVlogs = (includeHidden: boolean = false) => {
     category: string = "general",
     thumbnailUrl?: string
   ) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase.from("vlogs").insert({
         title,
@@ -89,6 +101,14 @@ export const useVlogs = (includeHidden: boolean = false) => {
   };
 
   const updateVlog = async (id: string, updates: Partial<Vlog>) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase
         .from("vlogs")
@@ -116,6 +136,14 @@ export const useVlogs = (includeHidden: boolean = false) => {
   };
 
   const deleteVlog = async (id: string) => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase is not configured. Please set environment variables.",
+        variant: "destructive",
+      });
+      return { success: false, error: new Error("Supabase is not configured") };
+    }
     try {
       const { error } = await supabase.from("vlogs").delete().eq("id", id);
 
