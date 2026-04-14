@@ -126,7 +126,11 @@ const AdminAdmissions = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => deleteApplication(application.id)}
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to delete this application?")) {
+                          deleteApplication(application.id);
+                        }
+                      }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

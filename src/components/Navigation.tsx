@@ -2,10 +2,12 @@ import { NavLink } from "./NavLink";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import EnrollNowDialog from "./EnrollNowDialog";
-import schoolBadge from "@/assets/school-badge.png";
+import schoolBadge from "@/assets/school-badge-brown.png";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { getContent: getFooterContent } = useSiteContent("footer");
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -24,10 +26,18 @@ const Navigation = () => {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <NavLink to="/" className="flex items-center space-x-3">
-            <img src={schoolBadge} alt="Elyon School Badge" className="h-12 w-12 object-contain" />
+            <img 
+              src={getFooterContent("brand", "logo", schoolBadge)} 
+              alt="Elyon School Badge" 
+              className="h-12 w-12 object-contain" 
+            />
             <div className="hidden sm:flex flex-col">
-              <span className="font-poppins text-lg font-bold text-primary">Elyon Kindergarten & Primary School</span>
-              <span className="font-inter text-xs text-muted-foreground italic">"In God We Trust"</span>
+              <span className="font-poppins text-lg font-bold text-primary">
+                {getFooterContent("brand", "name", "Elyon Kindergarten & Primary School")}
+              </span>
+              <span className="font-inter text-xs text-muted-foreground italic">
+                {getFooterContent("brand", "motto", "\"In God We Trust\"")}
+              </span>
             </div>
           </NavLink>
 

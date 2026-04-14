@@ -104,8 +104,8 @@ export const useGallery = (adminMode: boolean = false) => {
     } catch (error) {
       console.error("Error uploading image:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload image",
+        title: "Upload Error",
+        description: error instanceof Error ? error.message : "Failed to upload gallery image. Please run storage_setup.sql.",
         variant: "destructive",
       });
       return { success: false, error };
@@ -139,8 +139,8 @@ export const useGallery = (adminMode: boolean = false) => {
     } catch (error) {
       console.error("Error updating image:", error);
       toast({
-        title: "Error",
-        description: "Failed to update image",
+        title: "Update Error",
+        description: error instanceof Error ? error.message : "Failed to update gallery image",
         variant: "destructive",
       });
       return { success: false, error };

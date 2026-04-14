@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, LogOut, Images, FileText, Home, Info, BookOpen, MapPin, GraduationCap, Phone, Video, Newspaper, Presentation, Mail, Users } from "lucide-react";
+import { Loader2, LogOut, Images, FileText, Home, Info, BookOpen, MapPin, GraduationCap, Phone, Video, Newspaper, Presentation, Mail, Users, Menu, X, ExternalLink, LayoutDashboard } from "lucide-react";
 import AdminGallery from "@/components/admin/AdminGallery";
 import AdminContentEditor from "@/components/admin/AdminContentEditor";
 import AdminVlogs from "@/components/admin/AdminVlogs";
@@ -17,9 +17,10 @@ const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState("home");
+  const [activeTab, setActiveTab] = useState("hero");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // TEMPORARY: Any authenticated user can access admin
     if (!loading && !user) {
       navigate("/admin/login");
     }
@@ -32,13 +33,15 @@ const Admin = () => {
 
   if (loading) {
     return (
-      <main className="flex-1 flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <main className="flex-1 flex items-center justify-center py-16 min-h-screen bg-muted/30">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+          <p className="font-inter text-muted-foreground">Loading dashboard...</p>
+        </div>
       </main>
     );
   }
 
-  // TEMPORARY: Any authenticated user can access admin
   if (!user) {
     return null;
   }
@@ -53,76 +56,32 @@ const Admin = () => {
     { id: "gallery", label: "Gallery", icon: Images },
     { id: "vlogs", label: "Vlogs", icon: Video },
     { id: "blogs", label: "Blogs", icon: Newspaper },
+    { id: "footer", label: "Footer", icon: LayoutDashboard },
   ];
 
-  return (
-    <main className="flex-1 bg-muted/30">
-      {/* Admin Header */}
-      <div className="bg-background border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div>
-              <h1 className="font-poppins text-2xl font-bold">Admin Dashboard</h1>
-              <p className="font-inter text-sm text-muted-foreground">
-                Manage your website content
-              </p>
-            </div>
-            <Button variant="outline" onClick={handleSignOut} className="font-inter">
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </div>
+  const sidebarItems = [
+    { id: "hero", label: "Hero Slides", icon: Presentation },
+    { id: "content", label: "Page Content", icon: FileText },
+    { id: "gallery", label: "Gallery", icon: Images },
+    { id: "vlogs", label: "Vlogs", icon: Video },
+    { id: "blogs", label: "Blogs", icon: Newspaper },
+    { id: "admissions", label: "Admissions", icon: Users },
+    { id: "contacts", label: "Contacts", icon: Mail },
+    { id: "locations", label: "Locations", icon: MapPin },
+  ];
 
-      {/* Admin Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="hero" className="space-y-6">
-          <TabsList className="flex flex-wrap gap-2 h-auto p-2">
-            <TabsTrigger value="hero" className="font-inter">
-              <Presentation className="h-4 w-4 mr-2" />
-              Hero Slides
-            </TabsTrigger>
-            <TabsTrigger value="content" className="font-inter">
-              <FileText className="h-4 w-4 mr-2" />
-              Page Content
-            </TabsTrigger>
-            <TabsTrigger value="gallery" className="font-inter">
-              <Images className="h-4 w-4 mr-2" />
-              Gallery
-            </TabsTrigger>
-            <TabsTrigger value="vlogs" className="font-inter">
-              <Video className="h-4 w-4 mr-2" />
-              Vlogs
-            </TabsTrigger>
-            <TabsTrigger value="blogs" className="font-inter">
-              <Newspaper className="h-4 w-4 mr-2" />
-              Blogs
-            </TabsTrigger>
-            <TabsTrigger value="admissions" className="font-inter">
-              <Users className="h-4 w-4 mr-2" />
-              Admissions
-            </TabsTrigger>
-            <TabsTrigger value="contacts" className="font-inter">
-              <Mail className="h-4 w-4 mr-2" />
-              Contacts
-            </TabsTrigger>
-            <TabsTrigger value="locations" className="font-inter">
-              <MapPin className="h-4 w-4 mr-2" />
-              Locations
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="hero">
-            <AdminHeroSlides />
-          </TabsContent>
-
-          <TabsContent value="content" className="space-y-6">
-            <div className="flex flex-wrap gap-2">
+  const renderContent = () => {
+    switch (activeTab) {
+      case "hero":
+        return <AdminHeroSlides />;
+      case "content":
+        return (
+          <div className="space-y-6">
+            <div className="flex flex-wrap gap-2 p-1 bg-muted rounded-lg">
               {pages.map((page) => (
                 <Button
                   key={page.id}
-                  variant={selectedPage === page.id ? "default" : "outline"}
+                  variant={selectedPage === page.id ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setSelectedPage(page.id)}
                   className="font-inter"
@@ -133,34 +92,148 @@ const Admin = () => {
               ))}
             </div>
             <AdminContentEditor page={selectedPage} />
-          </TabsContent>
+          </div>
+        );
+      case "gallery":
+        return <AdminGallery />;
+      case "vlogs":
+        return <AdminVlogs />;
+      case "blogs":
+        return <AdminBlogs />;
+      case "admissions":
+        return <AdminAdmissions />;
+      case "contacts":
+        return <AdminContactSubmissions />;
+      case "locations":
+        return <AdminLocations />;
+      default:
+        return <AdminHeroSlides />;
+    }
+  };
 
-          <TabsContent value="gallery">
-            <AdminGallery />
-          </TabsContent>
+  return (
+    <div className="flex min-h-screen bg-muted/30">
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-background border-r shadow-lg transform transition-transform duration-200 ease-in-out
+        lg:relative lg:translate-x-0 lg:shadow-none
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center gap-2">
+              <LayoutDashboard className="h-6 w-6 text-primary" />
+              <div>
+                <h2 className="font-poppins font-bold text-lg leading-tight">Elyon Admin</h2>
+                <p className="font-inter text-xs text-muted-foreground">Dashboard</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
 
-          <TabsContent value="vlogs">
-            <AdminVlogs />
-          </TabsContent>
+          {/* Sidebar Nav */}
+          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+            {sidebarItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSidebarOpen(false);
+                }}
+                className={`
+                  w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-inter transition-colors
+                  ${activeTab === item.id 
+                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }
+                `}
+              >
+                <item.icon className="h-4 w-4 flex-shrink-0" />
+                {item.label}
+              </button>
+            ))}
+          </nav>
 
-          <TabsContent value="blogs">
-            <AdminBlogs />
-          </TabsContent>
+          {/* Sidebar Footer */}
+          <div className="p-3 border-t space-y-2">
+            <Link
+              to="/"
+              target="_blank"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-inter text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View Website
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-inter text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+            <div className="px-3 pt-2 border-t">
+              <p className="font-inter text-xs text-muted-foreground truncate" title={user.email || ""}>
+                {user.email}
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
 
-          <TabsContent value="admissions">
-            <AdminAdmissions />
-          </TabsContent>
+      {/* Sidebar Overlay for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-          <TabsContent value="contacts">
-            <AdminContactSubmissions />
-          </TabsContent>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top header bar */}
+        <header className="sticky top-0 z-30 bg-background border-b px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <div>
+                <h1 className="font-poppins text-lg font-bold capitalize">
+                  {sidebarItems.find(i => i.id === activeTab)?.label || "Dashboard"}
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-inter text-xs text-muted-foreground hidden sm:block">
+                {user.email}
+              </span>
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="font-inter">
+                <LogOut className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
+            </div>
+          </div>
+        </header>
 
-          <TabsContent value="locations">
-            <AdminLocations />
-          </TabsContent>
-        </Tabs>
+        {/* Page content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+          {renderContent()}
+        </main>
       </div>
-    </main>
+    </div>
   );
 };
 

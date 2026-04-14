@@ -226,7 +226,11 @@ const AdminLocations = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => deleteLocation(location.id)}
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to delete this location?")) {
+                          deleteLocation(location.id);
+                        }
+                      }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

@@ -100,8 +100,8 @@ export const useHeroSlides = (adminMode: boolean = false) => {
     } catch (error) {
       console.error("Error uploading hero slide:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload hero slide",
+        title: "Upload Error",
+        description: error instanceof Error ? error.message : "Failed to upload hero slide. Please run storage_setup.sql.",
         variant: "destructive",
       });
       return { success: false, error };
@@ -135,8 +135,8 @@ export const useHeroSlides = (adminMode: boolean = false) => {
     } catch (error) {
       console.error("Error updating hero slide:", error);
       toast({
-        title: "Error",
-        description: "Failed to update hero slide",
+        title: "Update Error",
+        description: error instanceof Error ? error.message : "Failed to update hero slide",
         variant: "destructive",
       });
       return { success: false, error };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft, LayoutDashboard } from "lucide-react";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
@@ -18,13 +18,11 @@ const AdminAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
-  // TEMPORARY: Universal admin - any authenticated user can access
   const { signIn, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // TEMPORARY: Any authenticated user can access admin
     if (!loading && user) {
       navigate("/admin");
     }
@@ -73,11 +71,12 @@ const AdminAuth = () => {
           title: "Welcome Back",
           description: "You have successfully logged in",
         });
+        navigate("/admin");
       }
     } catch (err) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: "An unexpected error occurred. Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -87,18 +86,29 @@ const AdminAuth = () => {
 
   if (loading) {
     return (
-      <main className="flex-1 flex items-center justify-center py-16">
+      <main className="flex-1 flex items-center justify-center py-16 min-h-screen bg-muted/30">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </main>
     );
   }
 
   return (
-    <main className="flex-1 flex items-center justify-center py-16 bg-muted/30">
+    <main className="flex-1 flex items-center justify-center py-16 min-h-screen bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto space-y-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 font-inter text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to website
+          </Link>
+
           <Card>
             <CardHeader className="text-center">
+              <div className="mx-auto mb-3 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <LayoutDashboard className="h-6 w-6 text-primary" />
+              </div>
               <CardTitle className="font-poppins text-2xl">
                 Admin Login
               </CardTitle>
@@ -115,8 +125,12 @@ const AdminAuth = () => {
                     type="email"
                     placeholder="admin@elyonschool.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
+                    }}
                     disabled={isLoading}
+                    autoComplete="email"
                   />
                   {errors.email && (
                     <p className="text-sm text-destructive">{errors.email}</p>
@@ -130,8 +144,12 @@ const AdminAuth = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
+                    }}
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>

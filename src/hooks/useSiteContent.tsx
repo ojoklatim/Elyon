@@ -62,31 +62,46 @@ export const useSiteContent = (page?: string) => {
     section: string,
     key: string,
     value: string,
-    contentType: string = "text"
+    contentType: string = "text",
+    skipFetch: boolean = false
   ) => {
     if (!supabase) {
       console.error("Supabase is not configured. Please set environment variables.");
       return { success: false, error: new Error("Supabase is not configured") };
     }
     try {
-      const { error } = await supabase
-        .from("site_content")
-        .upsert(
-          {
-            page: targetPage,
-            section,
-            content_key: key,
-            content_value: value,
-            content_type: contentType,
-          },
-          {
-            onConflict: "page,section,content_key",
-          }
-        );
+      // If value is empty, delete the row (content_value is NOT NULL in DB)
+      if (value === "") {
+        const { error } = await supabase
+          .from("site_content")
+          .delete()
+          .eq("page", targetPage)
+          .eq("section", section)
+          .eq("content_key", key);
 
-      if (error) throw error;
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("site_content")
+          .upsert(
+            {
+              page: targetPage,
+              section,
+              content_key: key,
+              content_value: value,
+              content_type: contentType,
+            },
+            {
+              onConflict: "page,section,content_key",
+            }
+          );
+
+        if (error) throw error;
+      }
       
-      await fetchContent();
+      if (!skipFetch) {
+        await fetchContent();
+      }
       return { success: true };
     } catch (error) {
       console.error("Error updating content:", error);

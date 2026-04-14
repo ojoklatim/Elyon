@@ -453,6 +453,27 @@ const PAGE_CONTENT_STRUCTURE: Record<string, ContentSection[]> = {
       ],
     },
   ],
+  footer: [
+    {
+      section: "brand",
+      label: "Brand Information",
+      fields: [
+        { key: "name", label: "School Name", type: "text", placeholder: "Elyon Kindergarten & Primary School" },
+        { key: "motto", label: "School Motto", type: "text", placeholder: "\"In God We Trust\"" },
+        { key: "logo", label: "School Logo", type: "image" },
+        { key: "description", label: "Short Description", type: "textarea", placeholder: "Nurturing young minds..." },
+      ],
+    },
+    {
+      section: "contact",
+      label: "Footer Contact Info",
+      fields: [
+        { key: "address", label: "Address", type: "text", placeholder: "Mutungo & Nsangi, Kampala, Uganda" },
+        { key: "phone", label: "Phone Number", type: "text", placeholder: "+256 XXX XXXXXX" },
+        { key: "email", label: "Email Address", type: "text", placeholder: "info@elyonschool.com" },
+      ],
+    },
+  ],
 };
 
 interface AdminContentEditorProps {
@@ -477,18 +498,31 @@ const AdminContentEditor = ({ page }: AdminContentEditorProps) => {
 
   const sections = PAGE_CONTENT_STRUCTURE[page] || [];
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    const initialData: Record<string, Record<string, string>> = {};
-    sections.forEach((section) => {
-      const sectionKey = `${page}_${section.section}`;
-      initialData[section.section] = {};
-      section.fields.forEach((field) => {
-        initialData[section.section][field.key] = content[sectionKey]?.[field.key] || "";
+    // Only initialize formData when content is loaded and we haven't started editing
+    // OR when the page changes
+    if (!loading && (isFirstRender.current || Object.keys(formData).length === 0)) {
+      const initialData: Record<string, Record<string, string>> = {};
+      sections.forEach((section) => {
+        const sectionKey = `${page}_${section.section}`;
+        initialData[section.section] = {};
+        section.fields.forEach((field) => {
+          initialData[section.section][field.key] = content[sectionKey]?.[field.key] || "";
+        });
       });
-    });
-    setFormData(initialData);
-    setHasChanges(false);
-  }, [page, content]);
+      setFormData(initialData);
+      setHasChanges(false);
+      isFirstRender.current = false;
+    }
+  }, [page, loading, content]);
+
+  // Reset first render flag when page changes
+  useEffect(() => {
+    isFirstRender.current = true;
+    setFormData({});
+  }, [page]);
 
   const handleFieldChange = (sectionId: string, fieldKey: string, value: string) => {
     setFormData((prev) => ({
@@ -498,19 +532,41 @@ const AdminContentEditor = ({ page }: AdminContentEditorProps) => {
     setHasChanges(true);
   };
 
+  const getContentType = (fieldType: string) => {
+    if (fieldType === "image") return "image";
+    return "text";
+  };
+
   const handleSaveAll = async () => {
     setIsSaving(true);
+    let hasErrors = false;
     try {
-      for (const section of sections) {
+      const fieldList: { section: string; key: string; value: string; type: string }[] = [];
+      
+      sections.forEach(section => {
         const sectionData = formData[section.section] || {};
-        for (const field of section.fields) {
+        section.fields.forEach(field => {
           const value = sectionData[field.key];
-          if (value !== undefined && value !== "") {
-            await updateContent(page, section.section, field.key, value, field.type);
+          if (value !== undefined) {
+            fieldList.push({ section: section.section, key: field.key, value, type: field.type });
           }
+        });
+      });
+
+      for (let i = 0; i < fieldList.length; i++) {
+        const { section, key, value, type } = fieldList[i];
+        const isLast = i === fieldList.length - 1;
+        const result = await updateContent(page, section, key, value, getContentType(type), !isLast);
+        if (result && !result.success) {
+          hasErrors = true;
         }
       }
-      toast({ title: "All Changes Saved", description: "Your content has been updated successfully" });
+
+      if (hasErrors) {
+        toast({ title: "Partial Save", description: "Some changes could not be saved. Check console for details.", variant: "destructive" });
+      } else {
+        toast({ title: "All Changes Saved", description: "Your content has been updated successfully" });
+      }
       setHasChanges(false);
     } catch (error) {
       toast({ title: "Error", description: "Failed to save some changes", variant: "destructive" });

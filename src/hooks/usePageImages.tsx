@@ -42,8 +42,8 @@ export const usePageImages = () => {
     } catch (error) {
       console.error("Error uploading image:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload image",
+        title: "Upload Error",
+        description: error instanceof Error ? error.message : "Failed to upload image. Ensure you've run the storage setup SQL.",
         variant: "destructive",
       });
       return { success: false, url: null };
