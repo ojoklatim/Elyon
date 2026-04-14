@@ -41,19 +41,6 @@ const Programs = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="font-poppins text-xl">
-                      {getContent("kindergarten", "baby_class_title", "Baby Class (Ages 2-3)")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="font-inter text-muted-foreground">
-                      {getContent("kindergarten", "baby_class_desc", "Introduction to school environment, basic socialization, sensory activities, and early motor skill development.")}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-poppins text-xl">
                       {getContent("kindergarten", "nursery_title", "Nursery (Ages 3-5)")}
                     </CardTitle>
                   </CardHeader>

@@ -190,14 +190,6 @@ const Admissions = () => {
                 <CardContent className="space-y-3">
                   <div>
                     <p className="font-inter font-semibold">
-                      {getContent("requirements", "age1_label", "Baby Class:")}
-                    </p>
-                    <p className="font-inter text-sm text-muted-foreground">
-                      {getContent("requirements", "age1_value", "2-3 years old")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-inter font-semibold">
                       {getContent("requirements", "age2_label", "Nursery:")}
                     </p>
                     <p className="font-inter text-sm text-muted-foreground">
@@ -310,7 +302,6 @@ const Admissions = () => {
                           <SelectValue placeholder="Select program" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="baby">Baby Class</SelectItem>
                           <SelectItem value="nursery">Nursery</SelectItem>
                           <SelectItem value="p1">Primary 1</SelectItem>
                           <SelectItem value="p2">Primary 2</SelectItem>
