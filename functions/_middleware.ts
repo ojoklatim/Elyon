@@ -1,4 +1,5 @@
-// Static files are handled by Cloudflare Pages and _redirects rules.
-// SPA routing is handled by _redirects (/* /index.html 200).
-// No custom middleware needed.
-export default {};
+import type { PagesFunction } from "@cloudflare/workers-types";
+
+export const onRequest: PagesFunction = async (context) => {
+  return context.next();
+};
