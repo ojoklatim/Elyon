@@ -59,21 +59,26 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `covers/${fileName}`;
+      const filePath = `blog-covers/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("blogs")
+        .from("page-images")
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from("blogs")
+        .from("page-images")
         .getPublicUrl(filePath);
 
       return { success: true, url: publicUrl };
     } catch (error) {
       console.error("Error uploading cover image:", error);
+      toast({
+        title: "Upload Failed",
+        description: "Could not upload the blog cover image. Please try again.",
+        variant: "destructive",
+      });
       return { success: false, url: null, error };
     }
   };
@@ -167,10 +172,10 @@ export const useBlogs = (includeUnpublished: boolean = false) => {
     try {
       // Delete cover image from storage if exists
       if (coverImageUrl) {
-        const urlParts = coverImageUrl.split("/blogs/");
+        const urlParts = coverImageUrl.split("/page-images/");
         if (urlParts.length > 1) {
           const filePath = urlParts[1];
-          await supabase.storage.from("blogs").remove([filePath]);
+          await supabase.storage.from("page-images").remove([filePath]);
         }
       }
 

@@ -36,8 +36,15 @@ const Home = () => {
         >
           <motion.h1 
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            animate={{ opacity: [0, 1, 1, 0] }}
+            transition={{ 
+              opacity: {
+                times: [0, 0.1, 0.8, 1],
+                duration: 4,
+                delay: 0.2
+              },
+              scale: { duration: 0.6, delay: 0.2 }
+            }}
             className="font-poppins text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
           >
             {getContent("hero", "title", "Welcome to Elyon Kindergarten and Primary School")}
