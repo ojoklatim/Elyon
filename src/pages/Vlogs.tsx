@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,31 +10,107 @@ import { motion } from "framer-motion";
 
 const CATEGORIES = ["all", "events", "lessons", "announcements", "activities", "general"];
 
+// Extract video ID from various YouTube URL formats
+const getYouTubeId = (url: string): string | null => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=)([^&\s]+)/,
+    /(?:youtu\.be\/)([^?\s]+)/,
+    /(?:youtube\.com\/embed\/)([^?\s]+)/,
+    /(?:youtube\.com\/shorts\/)([^?\s]+)/,
+    /(?:youtube\.com\/v\/)([^?\s]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+};
+
+// Extract video ID from Vimeo URLs
+const getVimeoId = (url: string): string | null => {
+  const match = url.match(/(?:vimeo\.com\/)(\d+)/);
+  return match ? match[1] : null;
+};
+
+// Extract video ID from Dailymotion URLs
+const getDailymotionId = (url: string): string | null => {
+  const match = url.match(/(?:dailymotion\.com\/video\/|dai\.ly\/)([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
+};
+
+// Extract video ID from Facebook video URLs
+const getFacebookVideoUrl = (url: string): boolean => {
+  return /facebook\.com.*\/videos\//.test(url) || /fb\.watch/.test(url);
+};
+
+// Extract video ID from TikTok URLs
+const getTikTokId = (url: string): string | null => {
+  const match = url.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+  return match ? match[1] : null;
+};
+
 const Vlogs = () => {
   const { vlogs, loading } = useVlogs();
   const { getContent } = useSiteContent("vlogs");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedVlog, setSelectedVlog] = useState<{ title: string; url: string } | null>(null);
+  const [vimeoThumbnails, setVimeoThumbnails] = useState<Record<string, string>>({});
 
   const filteredVlogs = selectedCategory === "all" 
     ? vlogs 
     : vlogs.filter(vlog => vlog.category === selectedCategory);
 
+  // Fetch Vimeo thumbnails via oEmbed API
+  useEffect(() => {
+    const vimeoVlogs = vlogs.filter(v => getVimeoId(v.video_url) && !v.thumbnail_url);
+    vimeoVlogs.forEach(async (vlog) => {
+      const vimeoId = getVimeoId(vlog.video_url);
+      if (vimeoId && !vimeoThumbnails[vimeoId]) {
+        try {
+          const res = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}`);
+          const data = await res.json();
+          if (data.thumbnail_url) {
+            setVimeoThumbnails(prev => ({ ...prev, [vimeoId]: data.thumbnail_url }));
+          }
+        } catch (e) {
+          // Silently fail for Vimeo thumbnail fetch
+        }
+      }
+    });
+  }, [vlogs]);
+
   const getVideoEmbedUrl = (url: string) => {
-    const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    if (youtubeMatch) {
-      return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+    const ytId = getYouTubeId(url);
+    if (ytId) return `https://www.youtube.com/embed/${ytId}`;
+
+    const vimeoId = getVimeoId(url);
+    if (vimeoId) return `https://player.vimeo.com/video/${vimeoId}`;
+
+    const dmId = getDailymotionId(url);
+    if (dmId) return `https://www.dailymotion.com/embed/video/${dmId}`;
+
+    if (getFacebookVideoUrl(url)) {
+      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false`;
     }
+
     return url;
   };
 
   const getVideoThumbnail = (url: string, customThumbnail?: string | null) => {
     if (customThumbnail) return customThumbnail;
-    
-    const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    if (youtubeMatch) {
-      return `https://img.youtube.com/vi/${youtubeMatch[1]}/mqdefault.jpg`;
-    }
+
+    // YouTube
+    const ytId = getYouTubeId(url);
+    if (ytId) return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+
+    // Vimeo (from cached oEmbed results)
+    const vimeoId = getVimeoId(url);
+    if (vimeoId && vimeoThumbnails[vimeoId]) return vimeoThumbnails[vimeoId];
+
+    // Dailymotion
+    const dmId = getDailymotionId(url);
+    if (dmId) return `https://www.dailymotion.com/thumbnail/video/${dmId}`;
+
     return null;
   };
 
